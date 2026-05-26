@@ -1,17 +1,68 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 3500
-const app = express()
-// serve static files
-app.get(['/', '/index', '/index.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, "views", "index.html"));
+const express = require("express");
+const path = require("path");
+const { logger } = require("./middleware/logEvents");
+const cors = require("cors");
+const PORT = process.env.PORT || 3500;
+const app = express();
+
+app.use(logger);
+
+const whitelist = [
+  "https://www.yoursite.com",
+  "http://127.0.0.1:5500",
+  "http://localhost:3500",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Blocked by CORS security policy!"));
+    }
+  },
+  optionsSuccessStatus: 200,
+};
+
+// Apply the restricted CORS settings to your app
+app.use(cors(corsOptions));
+
+//
+app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "/public")));
+app.use("/subdir",express.static(path.join(__dirname, "/public")));
+
+app.use("/", require("./routes/root"));
+app.use("/subdir", require("./routes/subdir"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.all(/.*/, (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"), (err) => {
+      if (err) {
+        res.type("txt").send("404 Not Found");
+      }
+    });
+  } else if (req.accepts("json")) {
+    res.json({ error: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
 });
 
-// 2. NEW PAGE ROUTE: Matches '/new-page' or '/new-page.html'
-app.get(['/new-page', '/new-page.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, "views", "new-page.html"));
-});
-
-
-
-app.listen(PORT, () => console.log(`server is running ${PORT}`))
+app.listen(PORT, () => console.log(`server is running ${PORT}`));
