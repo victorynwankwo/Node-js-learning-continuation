@@ -114,3 +114,8 @@
 2026-05-26	08:56:34	27064aea-4ed8-4fe7-9f2e-1043e69e1391	GET	no-origin-detected	/new-page.html
 2026-05-26	08:56:34	7e0f0007-9c08-4725-a6a6-d32a689be11d	GET	no-origin-detected	/css/style.css
 2026-05-26	08:56:34	f86bb1f6-1245-4cc4-ad98-5db8c0116c7a	GET	no-origin-detected	/img/img1.svg
+2026-05-26	09:33:53	8fed0bd7-0acd-4f41-addf-e47cc69fe090	GET	no-origin-detected	/employees
+2026-05-26	09:34:03	b810b47c-462a-4b45-b91e-000160c00f99	GET	no-origin-detected	/employees
+2026-05-26	09:34:14	f9a983f2-60f6-4a62-9918-9e243ab2d00f	GET	no-origin-detected	/data
+2026-05-26	09:35:47	f1780d5b-d042-4bfe-b9c7-61e2bb0718b6	POST	no-origin-detected	/employee
+2026-05-26	09:36:08	3c7feb33-2b76-47ee-aaa5-16970ccf4755	GET	no-origin-detected	/employees

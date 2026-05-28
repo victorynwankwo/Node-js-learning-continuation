@@ -1,34 +1,19 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
-const path = require("path")
-const data = {}
-data.employees = require("../../data/data.json")
+const path = require('path');
+const fs = require('fs'); // Fixed: Added native file system module here
+const employeesController = require('../../controllers/employeesController');
 
+
+// Router routes mapping
 router.route("/")
-.get((req, res)=>{
-    res.json(data.employees)
-})
-.post((req, res)=>{
-     res.json({
-        "firstname" : req.body.firstname,
-         "lastname" : req.body.lastname
-     })
-})
+    .get(employeesController.getAllEmployee)
+    .post(employeesController.createNewEmployee)
+    .put(employeesController.updateNewEmployee)
+    .delete(employeesController.deleteEmployee);
 
-.put((req, res)=>{
-     res.json({
-        "firstname" : req.body.firstname,
-         "lastname" : req.body.lastname
-     })
-})
+router.route("/:id")
+    .get(employeesController.getEmployee);
+  
 
-.delete((req, res)=>{
-     res.json({"id": req.body.id})
-    
-})
-router.route(":/id")
-.get((req, res)=>{
-    res.json({"id": req.params.id})
-})
-
-module.export = router
+module.exports = router;

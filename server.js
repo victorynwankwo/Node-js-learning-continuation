@@ -1,31 +1,17 @@
 const express = require("express");
 const path = require("path");
-const { logger } = require("./middleware/logEvents");
+// const { logger } = require("./middleware/logEvents");
 const cors = require("cors");
 const PORT = process.env.PORT || 3500;
 const app = express();
+const corsOptions = require("./config/corsOption");
 
-app.use(logger);
 
-const whitelist = [
-  "https://www.yoursite.com",
-  "http://127.0.0.1:5500",
-  "http://localhost:3500",
-];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Blocked by CORS security policy!"));
-    }
-  },
-  optionsSuccessStatus: 200,
-};
+// app.use(logger);
 
-// Apply the restricted CORS settings to your app
 app.use(cors(corsOptions));
+
 
 //
 app.use(express.urlencoded({ extended: false }));
@@ -38,17 +24,8 @@ app.use("/subdir",express.static(path.join(__dirname, "/public")));
 app.use("/", require("./routes/root"));
 app.use("/subdir", require("./routes/subdir"));
 
-
-
-
-
-
-
-
-
-
-
-
+// API routes
+app.use("/employees", require("./routes/api/employees"));
 
 app.all(/.*/, (req, res) => {
   res.status(404);
