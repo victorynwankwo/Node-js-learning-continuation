@@ -1,7 +1,6 @@
 const path = require("path");
 const fsPromises = require("fs").promises;
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
 const userDb = { 
   users: require("../model/users.json"), 
@@ -21,9 +20,17 @@ const handleRefreshToken =  (req, res) => {
     
     console.log("decoded",decoded)
 
-    if (err || foundUser.username !== decoded.username) return res.sendStatus(403); //unauthorized
+    if (err || foundUser.username !== decoded.username) return res.sendStatus(403); 
+    const roles = Object.values(foundUser.roles)
+    //unauthorized
     const accessToken = jwt.sign(
-      {"username": decoded.username},
+        {
+                    "UserInfo": {
+                        "username": decoded.username,
+                        "roles": roles
+                    }
+                },
+    
       process.env.ACCESS_TOKEN,
       {expiresIn:"2m"}
     )

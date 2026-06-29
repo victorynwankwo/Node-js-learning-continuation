@@ -1,14 +1,14 @@
 const path = require("path");
-const userDb = {
-  users: require("../model/users.json"),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
+// const userDb = {
+  // users: require("../model/users.json"),
+  // setUsers: function (data) {
+    // this.users = data;
+  // },
+  
 const fsPromises = require("fs").promises;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+
 
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
@@ -22,11 +22,20 @@ const handleLogin = async (req, res) => {
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (match) {
     // create JWT
+    const roles = Object.values(foundUsers.roles)
+    
     const acccessToken = jwt.sign(
-      { username: foundUser.username },
+        {
+                    "UserInfo": {
+                        "username": decoded.username,
+                        "roles": roles
+                    }
+                },
+     
       process.env.ACCESS_TOKEN,
       { expiresIn: "1m" },
     );
+  
     const refreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN,
@@ -43,7 +52,9 @@ const handleLogin = async (req, res) => {
     );
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "None",
+      secure:true,
+      maxAge: 24 * 60 * 60 * 1000
     });
     res.json({
       accessToken: acccessToken,
